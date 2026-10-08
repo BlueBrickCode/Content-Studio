@@ -2282,6 +2282,76 @@ async fn reveal_rendered_video(
 }
 
 pub fn run() {
+    // Add bundled FFmpeg/FFprobe resources to PATH when running
+    // the packaged application. During development, the normal system
+    // PATH is preserved so Homebrew FFmpeg continues to work on macOS.
+    if let Ok(exe_path) = std::env::current_exe() {
+        let mut bundled_dirs = Vec::new();
+
+        if let Some(exe_dir) = exe_path.parent() {
+            // Windows packaged app:
+            // Content Studio.exe
+            // resources/ffmpeg/ffmpeg.exe
+            bundled_dirs.push(
+                exe_dir
+                    .join("resources")
+                    .join("ffmpeg"),
+            );
+
+            // macOS packaged app:
+            // Content Studio.app/Contents/MacOS/Content Studio
+            // Content Studio.app/Contents/Resources/resources/ffmpeg/
+            bundled_dirs.push(
+                exe_dir
+                    .join("..")
+                    .join("Resources")
+                    .join("resources")
+                    .join("ffmpeg"),
+            );
+
+            // Also support a resource folder directly beside the executable.
+            bundled_dirs.push(
+                exe_dir
+                    .join("ffmpeg"),
+            );
+        }
+
+        let bundled_ffmpeg_dir = bundled_dirs
+            .into_iter()
+            .find(|dir| {
+                dir.join("ffmpeg.exe").is_file()
+                    || dir.join("ffmpeg").is_file()
+            });
+
+        if let Some(bundled_ffmpeg_dir) = bundled_ffmpeg_dir {
+            let current_path =
+                std::env::var_os("PATH")
+                    .unwrap_or_default();
+
+            let mut paths =
+                std::env::split_paths(&current_path)
+                    .collect::<Vec<_>>();
+
+            if !paths.iter().any(|path| {
+                path == &bundled_ffmpeg_dir
+            }) {
+                paths.insert(
+                    0,
+                    bundled_ffmpeg_dir,
+                );
+            }
+
+            if let Ok(new_path) =
+                std::env::join_paths(paths)
+            {
+                std::env::set_var(
+                    "PATH",
+                    new_path,
+                );
+            }
+        }
+    }
+
     let migrations =
         vec![
             Migration {
