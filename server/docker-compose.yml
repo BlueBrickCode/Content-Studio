@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: contentstudio-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: contentstudio
+      POSTGRES_PASSWORD: contentstudio
+      POSTGRES_DB: contentstudio
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - contentstudio_postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+  contentstudio_postgres_data:
+  

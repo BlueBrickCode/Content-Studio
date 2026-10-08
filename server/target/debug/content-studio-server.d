@@ -1,0 +1,1 @@
+/Users/casesciba/Documents/ContentStudio/server/target/debug/content-studio-server: /Users/casesciba/Documents/ContentStudio/server/migrations/001_initial.sql /Users/casesciba/Documents/ContentStudio/server/src/main.rs

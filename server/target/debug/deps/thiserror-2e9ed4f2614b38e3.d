@@ -1,0 +1,14 @@
+/Users/casesciba/Documents/ContentStudio/server/target/debug/deps/thiserror-2e9ed4f2614b38e3.d: /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/lib.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/aserror.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/display.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/var.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/private.rs /Users/casesciba/Documents/ContentStudio/server/target/debug/build/thiserror-4b54c0e63b009e6c/out/private.rs
+
+/Users/casesciba/Documents/ContentStudio/server/target/debug/deps/libthiserror-2e9ed4f2614b38e3.rlib: /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/lib.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/aserror.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/display.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/var.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/private.rs /Users/casesciba/Documents/ContentStudio/server/target/debug/build/thiserror-4b54c0e63b009e6c/out/private.rs
+
+/Users/casesciba/Documents/ContentStudio/server/target/debug/deps/libthiserror-2e9ed4f2614b38e3.rmeta: /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/lib.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/aserror.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/display.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/var.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/private.rs /Users/casesciba/Documents/ContentStudio/server/target/debug/build/thiserror-4b54c0e63b009e6c/out/private.rs
+
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/lib.rs:
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/aserror.rs:
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/display.rs:
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/var.rs:
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.21/src/private.rs:
+/Users/casesciba/Documents/ContentStudio/server/target/debug/build/thiserror-4b54c0e63b009e6c/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/casesciba/Documents/ContentStudio/server/target/debug/build/thiserror-4b54c0e63b009e6c/out

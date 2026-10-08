@@ -1,0 +1,14 @@
+/Users/casesciba/Documents/ContentStudio/server/target/debug/deps/serde-c72f7bb39ccdaf81.d: /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/integer128.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/mod.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/de.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/ser.rs /Users/casesciba/Documents/ContentStudio/server/target/debug/build/serde-0a11dfc8feb78ccb/out/private.rs
+
+/Users/casesciba/Documents/ContentStudio/server/target/debug/deps/libserde-c72f7bb39ccdaf81.rlib: /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/integer128.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/mod.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/de.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/ser.rs /Users/casesciba/Documents/ContentStudio/server/target/debug/build/serde-0a11dfc8feb78ccb/out/private.rs
+
+/Users/casesciba/Documents/ContentStudio/server/target/debug/deps/libserde-c72f7bb39ccdaf81.rmeta: /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/integer128.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/mod.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/de.rs /Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/ser.rs /Users/casesciba/Documents/ContentStudio/server/target/debug/build/serde-0a11dfc8feb78ccb/out/private.rs
+
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs:
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/integer128.rs:
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/mod.rs:
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/de.rs:
+/Users/casesciba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/private/ser.rs:
+/Users/casesciba/Documents/ContentStudio/server/target/debug/build/serde-0a11dfc8feb78ccb/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/casesciba/Documents/ContentStudio/server/target/debug/build/serde-0a11dfc8feb78ccb/out
