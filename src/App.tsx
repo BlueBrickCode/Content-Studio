@@ -5,18 +5,13 @@ import "./App.css";
 import Admin from "./pages/Admin";
 import Create from "./pages/Create";
 import Library from "./pages/Library";
-import Login from "./pages/Login";
 import Media from "./pages/Media";
 import Projects from "./pages/Projects";
 import { Templates } from "./pages/Templates";
+import YouTubeAccounts from "./pages/YouTubeAccounts";
+import UploadQueue from "./pages/UploadQueue";
 
-import {
-  getCurrentUser,
-  getStoredUser,
-  isLoggedIn,
-  logout,
-  type User,
-} from "./services/auth";
+import type { User } from "./services/auth";
 
 type Page =
   | "Dashboard"
@@ -26,16 +21,13 @@ type Page =
   | "Media"
   | "Projects"
   | "Publishing"
+  | "YouTubeAccounts"
+  | "UploadQueue"
   | "Analytics"
   | "Admin";
 
 function App() {
-  const [user, setUser] = useState<User | null>(
-    getStoredUser(),
-  );
-
-  const [checkingSession, setCheckingSession] =
-    useState(true);
+  const [user] = useState<User>({ id: "local-creator", email: "local@contentstudio.app", display_name: "Creator", role: "user", plan: "free" } as User);
 
   const [activePage, setActivePage] =
     useState<Page>("Dashboard");
@@ -57,15 +49,21 @@ function App() {
 
       const projects = await db.select<
         { count: number }[]
-      >("SELECT COUNT(*) as count FROM projects");
+      >(
+        "SELECT COUNT(*) as count FROM projects",
+      );
 
       const templates = await db.select<
         { count: number }[]
-      >("SELECT COUNT(*) as count FROM templates");
+      >(
+        "SELECT COUNT(*) as count FROM templates",
+      );
 
       const media = await db.select<
         { count: number }[]
-      >("SELECT COUNT(*) as count FROM media");
+      >(
+        "SELECT COUNT(*) as count FROM media",
+      );
 
       setCounts({
         projects: Number(projects[0]?.count ?? 0),
@@ -81,40 +79,14 @@ function App() {
   };
 
   useEffect(() => {
-    const verifySession = async () => {
-      if (!isLoggedIn()) {
-        setCheckingSession(false);
-        return;
-      }
-
-      try {
-        const currentUser = await getCurrentUser();
-
-        setUser(currentUser);
-      } catch (error) {
-        console.error(
-          "Unable to verify Content Studio session:",
-          error,
-        );
-
-        setUser(null);
-      } finally {
-        setCheckingSession(false);
-      }
-    };
-
-    verifySession();
-  }, []);
-
-  useEffect(() => {
     if (!user) {
       return;
     }
 
-    refreshCounts();
+    void refreshCounts();
 
     const handleFocus = () => {
-      refreshCounts();
+      void refreshCounts();
     };
 
     window.addEventListener("focus", handleFocus);
@@ -127,150 +99,62 @@ function App() {
     };
   }, [activePage, user]);
 
-  const handleAuthenticated = async () => {
-    try {
-      const currentUser = await getCurrentUser();
-
-      setUser(currentUser);
-      setActivePage("Dashboard");
-    } catch (error) {
-      console.error(
-        "Unable to load authenticated user:",
-        error,
-      );
-    }
-  };
-
-  const handleLogout = async () => {
-    await logout();
-
-    setUser(null);
-    setActivePage("Dashboard");
-  };
-
   const navigate = (page: Page) => {
     setActivePage(page);
   };
 
-  if (checkingSession) {
-    return (
-      <div className="app">
-        <main className="main">
-          <div className="page">
-            <div className="page-header">
-              <div>
-                <p className="eyebrow">
-                  CONTENT STUDIO
-                </p>
+  const navigationItems: {
+    label: string;
+    page: Page;
+  }[] = [
+    {
+      label: "Dashboard",
+      page: "Dashboard",
+    },
+    {
+      label: "Create",
+      page: "Create",
+    },
+    {
+      label: "Library",
+      page: "Library",
+    },
+    {
+      label: "Templates",
+      page: "Templates",
+    },
+    {
+      label: "Media",
+      page: "Media",
+    },
+    {
+      label: "Projects",
+      page: "Projects",
+    },
+    {
+      label: "Publishing",
+      page: "Publishing",
+    },
+    {
+      label: "YouTube Accounts",
+      page: "YouTubeAccounts",
+    },
+    {
+      label: "Upload Queue",
+      page: "UploadQueue",
+    },
+    {
+      label: "Analytics",
+      page: "Analytics",
+    },
+  ];
 
-                <h1>Loading workspace...</h1>
-
-                <p className="page-description">
-                  Verifying your account.
-                </p>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
+  if (user.role === "admin") {
+    navigationItems.push({
+      label: "Admin",
+      page: "Admin",
+    });
   }
-
-  if (!user) {
-    return (
-      <Login
-        onAuthenticated={handleAuthenticated}
-      />
-    );
-  }
-
-  const Sidebar = () => (
-    <aside className="sidebar">
-      <div className="brand">
-        <div className="brand-mark">CS</div>
-
-        <div>
-          <div className="brand-name">
-            Content Studio
-          </div>
-
-          <div className="brand-subtitle">
-            Creator Workspace
-          </div>
-        </div>
-      </div>
-
-      <nav className="navigation">
-        {[
-          "Dashboard",
-          "Create",
-          "Library",
-          "Templates",
-          "Media",
-          "Projects",
-          "Publishing",
-          "Analytics",
-          ...(user.role === "admin"
-            ? ["Admin"]
-            : []),
-        ].map((item) => (
-          <button
-            key={item}
-            className={
-              activePage === item
-                ? "nav-item active"
-                : "nav-item"
-            }
-            onClick={() =>
-              navigate(item as Page)
-            }
-          >
-            {item}
-          </button>
-        ))}
-      </nav>
-
-      <div className="sidebar-bottom">
-        <div className="user-card">
-          <div className="avatar">
-            {(user.display_name || user.email)
-              .charAt(0)
-              .toUpperCase()}
-          </div>
-
-          <div style={{ minWidth: 0 }}>
-            <div className="user-name">
-              {user.display_name || "Creator"}
-            </div>
-
-            <div className="user-role">
-              {user.role === "admin"
-                ? "Administrator"
-                : `${user.plan.charAt(0).toUpperCase()}${user.plan.slice(1)} Plan`}
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-            title="Sign out"
-            style={{
-              marginLeft: "auto",
-              border: 0,
-              background: "transparent",
-              color: "#777780",
-              cursor: "pointer",
-              fontSize: 12,
-              padding: "6px",
-              flexShrink: 0,
-            }}
-          >
-            ↪
-          </button>
-        </div>
-      </div>
-    </aside>
-  );
 
   const renderPlaceholder = (
     title: string,
@@ -295,237 +179,433 @@ function App() {
         <h3>{title}</h3>
 
         <p className="muted">
-          This area is intentionally reserved
-          for a later version. The core V1
+          This area is reserved for a later
+          version. Your existing content
           creation, templates, projects,
           media library, and rendering
-          workflow are available now.
+          workflow remain available.
         </p>
       </section>
     </div>
   );
 
   const renderPage = () => {
-    if (activePage === "Create") {
-      return <Create />;
-    }
+    switch (activePage) {
+      case "Create":
+        return <Create />;
 
-    if (activePage === "Library") {
-      return <Library />;
-    }
+      case "Library":
+        return <Library />;
 
-    if (activePage === "Templates") {
-      return <Templates />;
-    }
+      case "Templates":
+        return <Templates />;
 
-    if (activePage === "Media") {
-      return <Media />;
-    }
+      case "Media":
+        return <Media />;
 
-    if (activePage === "Projects") {
-      return <Projects />;
-    }
+      case "Projects":
+        return <Projects />;
 
-    if (activePage === "Admin") {
-      return <Admin currentUser={user} />;
-    }
+      case "YouTubeAccounts":
+        return <YouTubeAccounts />;
 
-    if (activePage === "Publishing") {
-      return renderPlaceholder(
-        "Publishing",
-        "Direct social publishing will be added after the local content-generation workflow is proven.",
-      );
-    }
+      case "UploadQueue":
+        return <UploadQueue />;
 
-    if (activePage === "Analytics") {
-      return renderPlaceholder(
-        "Analytics",
-        "Performance analytics will be added after publishing integrations exist.",
-      );
-    }
+      case "Admin":
+        return user.role === "admin"
+          ? <Admin currentUser={user} />
+          : renderPlaceholder(
+              "Access restricted",
+              "You do not have permission to access this page.",
+            );
 
-    return (
-      <div className="page">
-        <div className="page-header">
-          <div>
-            <p className="eyebrow">
-              WORKSPACE
-            </p>
+      case "Publishing":
+        return (
+          <div className="page">
+            <div className="page-header">
+              <div>
+                <p className="eyebrow">
+                  YOUTUBE PUBLISHING
+                </p>
 
-            <h1>Dashboard</h1>
+                <h1>Publishing</h1>
 
-            <p className="page-description">
-              Create, organize, render, and
-              manage your short-form content
-              from one local workspace.
-            </p>
+                <p className="page-description">
+                  Manage your YouTube channels
+                  and prepare videos for upload.
+                </p>
+              </div>
+            </div>
+
+            <section className="feature-grid">
+              <div className="feature-card">
+                <div className="feature-icon">
+                  01
+                </div>
+
+                <h3>YouTube Accounts</h3>
+
+                <p>
+                  Open your account workspace
+                  to manage your configured
+                  YouTube channels.
+                </p>
+
+                <button
+                  type="button"
+                  className="primary-button"
+                  onClick={() =>
+                    navigate("YouTubeAccounts")
+                  }
+                >
+                  Manage Accounts
+                </button>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-icon">
+                  02
+                </div>
+
+                <h3>Upload Queue</h3>
+
+                <p>
+                  Open the upload queue to
+                  review your video publishing
+                  jobs.
+                </p>
+
+                <button
+                  type="button"
+                  className="primary-button"
+                  onClick={() =>
+                    navigate("UploadQueue")
+                  }
+                >
+                  Open Upload Queue
+                </button>
+              </div>
+            </section>
           </div>
+        );
 
-          <button
-            className="primary-button"
-            onClick={() =>
-              navigate("Create")
-            }
-          >
-            + Create Content
-          </button>
-        </div>
+      case "Analytics":
+        return renderPlaceholder(
+          "Analytics",
+          "Performance analytics can be added after the publishing workflow is established.",
+        );
 
-        <section className="welcome">
-          <div>
-            <p className="eyebrow">
-              CONTENT STUDIO
-            </p>
+      case "Dashboard":
+      default:
+        return (
+          <div className="page">
+            <div className="page-header">
+              <div>
+                <p className="eyebrow">
+                  WORKSPACE
+                </p>
 
-            <h2>
-              Build your content library
-              once. Create from it again
-              and again.
-            </h2>
+                <h1>Dashboard</h1>
 
-            <p className="welcome-text">
-              Organize your videos, text, and
-              audio into categories, then use
-              those categories to quickly
-              create batches of short-form
-              content.
-            </p>
+                <p className="page-description">
+                  Create, organize, render, and
+                  manage your short-form
+                  content from one local
+                  workspace.
+                </p>
+              </div>
 
-            <div className="welcome-actions">
               <button
+                type="button"
                 className="primary-button"
-                onClick={() =>
-                  navigate("Library")
-                }
-              >
-                Build Content Library
-              </button>
-
-              <button
-                className="secondary-button"
                 onClick={() =>
                   navigate("Create")
                 }
               >
-                Create Content
+                + Create Content
               </button>
             </div>
-          </div>
-        </section>
 
-        <section className="stats">
-          <div className="stat-card">
-            <span>Projects</span>
+            <section className="welcome">
+              <div>
+                <p className="eyebrow">
+                  CONTENT STUDIO
+                </p>
 
-            <strong>
-              {counts.projects}
-            </strong>
+                <h2>
+                  Build your content library
+                  once. Create from it again
+                  and again.
+                </h2>
 
-            <small>
-              Saved creation projects
-            </small>
-          </div>
+                <p className="welcome-text">
+                  Organize your videos, text,
+                  and audio into categories,
+                  then use those categories
+                  to quickly create batches
+                  of short-form content.
+                </p>
 
-          <div className="stat-card">
-            <span>Templates</span>
+                <div className="welcome-actions">
+                  <button
+                    type="button"
+                    className="primary-button"
+                    onClick={() =>
+                      navigate("Library")
+                    }
+                  >
+                    Build Content Library
+                  </button>
 
-            <strong>
-              {counts.templates}
-            </strong>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() =>
+                      navigate("Create")
+                    }
+                  >
+                    Create Content
+                  </button>
+                </div>
+              </div>
+            </section>
 
-            <small>
-              Reusable visual templates
-            </small>
-          </div>
+            <section className="stats">
+              <div className="stat-card">
+                <span>Projects</span>
 
-          <div className="stat-card">
-            <span>Media</span>
+                <strong>
+                  {counts.projects}
+                </strong>
 
-            <strong>
-              {counts.media}
-            </strong>
-
-            <small>
-              Imported source assets
-            </small>
-          </div>
-
-          <div className="stat-card">
-            <span>Library</span>
-
-            <strong>NEW</strong>
-
-            <small>
-              Categories for your content
-            </small>
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">
-                NEW WORKFLOW
-              </p>
-
-              <h3>
-                Build once. Reuse
-                everything.
-              </h3>
-            </div>
-          </div>
-
-          <div className="feature-grid">
-            <div className="feature-card">
-              <div className="feature-icon">
-                01
+                <small>
+                  Saved creation projects
+                </small>
               </div>
 
-              <h4>Organize Videos</h4>
+              <div className="stat-card">
+                <span>Templates</span>
 
-              <p>
-                Create your own video
-                categories and assign
-                imported footage to them.
-              </p>
-            </div>
+                <strong>
+                  {counts.templates}
+                </strong>
 
-            <div className="feature-card">
-              <div className="feature-icon">
-                02
+                <small>
+                  Reusable visual templates
+                </small>
               </div>
 
-              <h4>Build Text Libraries</h4>
+              <div className="stat-card">
+                <span>Media</span>
 
-              <p>
-                Save hooks, captions,
-                headlines, calls to action,
-                and other reusable text.
-              </p>
-            </div>
+                <strong>
+                  {counts.media}
+                </strong>
 
-            <div className="feature-card">
-              <div className="feature-icon">
-                03
+                <small>
+                  Imported source assets
+                </small>
               </div>
 
-              <h4>Combine Categories</h4>
+              <div className="stat-card">
+                <span>Library</span>
 
-              <p>
-                Choose your video, text,
-                audio, and template
-                categories and create batches.
-              </p>
-            </div>
+                <strong>NEW</strong>
+
+                <small>
+                  Categories for your content
+                </small>
+              </div>
+            </section>
+
+            <section className="section">
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">
+                    CONTENT WORKFLOW
+                  </p>
+
+                  <h3>
+                    Build once. Reuse
+                    everything.
+                  </h3>
+                </div>
+              </div>
+
+              <div className="feature-grid">
+                <div className="feature-card">
+                  <div className="feature-icon">
+                    01
+                  </div>
+
+                  <h4>Organize Videos</h4>
+
+                  <p>
+                    Create your own video
+                    categories and assign
+                    imported footage to them.
+                  </p>
+                </div>
+
+                <div className="feature-card">
+                  <div className="feature-icon">
+                    02
+                  </div>
+
+                  <h4>Build Text Libraries</h4>
+
+                  <p>
+                    Save hooks, captions,
+                    headlines, calls to action,
+                    and other reusable text.
+                  </p>
+                </div>
+
+                <div className="feature-card">
+                  <div className="feature-icon">
+                    03
+                  </div>
+
+                  <h4>Combine Categories</h4>
+
+                  <p>
+                    Choose video, text, audio,
+                    and template categories to
+                    create batches of content.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section className="section">
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">
+                    YOUTUBE SHORTS
+                  </p>
+
+                  <h3>
+                    Continue to publishing
+                  </h3>
+                </div>
+              </div>
+
+              <div className="feature-grid">
+                <div className="feature-card">
+                  <div className="feature-icon">
+                    YT
+                  </div>
+
+                  <h4>YouTube Accounts</h4>
+
+                  <p>
+                    Open the account page to
+                    work with your YouTube
+                    channel configurations.
+                  </p>
+
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() =>
+                      navigate("YouTubeAccounts")
+                    }
+                  >
+                    Open Accounts
+                  </button>
+                </div>
+
+                <div className="feature-card">
+                  <div className="feature-icon">
+                    UP
+                  </div>
+
+                  <h4>Upload Queue</h4>
+
+                  <p>
+                    Open the queue to review
+                    your upload jobs and
+                    publishing workflow.
+                  </p>
+
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() =>
+                      navigate("UploadQueue")
+                    }
+                  >
+                    Open Queue
+                  </button>
+                </div>
+              </div>
+            </section>
           </div>
-        </section>
-      </div>
-    );
+        );
+    }
   };
 
   return (
     <div className="app">
-      <Sidebar />
+      <aside className="sidebar">
+        <div className="brand">
+          <div className="brand-mark">
+            CS
+          </div>
+
+          <div>
+            <div className="brand-name">
+              Content Studio
+            </div>
+
+            <div className="brand-subtitle">
+              Creator Workspace
+            </div>
+          </div>
+        </div>
+
+        <nav className="navigation">
+          {navigationItems.map((item) => (
+            <button
+              key={item.page}
+              type="button"
+              className={
+                activePage === item.page
+                  ? "nav-item active"
+                  : "nav-item"
+              }
+              onClick={() =>
+                navigate(item.page)
+              }
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="sidebar-bottom">
+          <div className="user-card">
+            <div className="avatar">
+              {(user.display_name || user.email)
+                .charAt(0)
+                .toUpperCase()}
+            </div>
+
+            <div style={{ minWidth: 0 }}>
+              <div className="user-name">
+                {user.display_name || "Creator"}
+              </div>
+
+              <div className="user-role">
+                {user.role === "admin"
+                  ? "Administrator"
+                  : `${user.plan.charAt(0).toUpperCase()}${user.plan.slice(1)} Plan`}
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
 
       <main className="main">
         {renderPage()}
